@@ -1,23 +1,36 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-    <title>Hello Deploy Now build with plain html</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
     <link rel="stylesheet" href="./main.css">
 </head>
-
 <body>
-    <div class="main">
-        <h1>
-            Hello Deploy Now build with plain html
-        </h1>
-        <div>
-            <a href="https://ionos.space/setup?repo=https://github.com/ionos-deploy-now/hello-plain-html"
-                target="_blank">
-                <img src="https://images.ionos.space/deploy-now-icons/deploy-to-ionos-btn.svg" />
-            </a>
-        </div>
-    </div>
+    <!-- <button onclick="salute()">Hola mundo</button> -->
+    <button onclick="read()">Read Fetch</button>
+    <input type="text" placeholder='la fecha en la que nos conocimos todo junto' id='datedate'>
+    <textarea name="nan" id="nan" cols="30" rows="10"></textarea>
 </body>
+<script>
 
+    function continueHere(){
+        console.log('text: ' + data.get('key'))
+        //document.getElementById('nan').innerText = data.get('storagetext')
+
+        if(data.get('key')==document.getElementById('datedate').value){
+            document.getElementById('nan').innerText = data.get('storagetext')
+        }else{
+            console.log('error')
+        }
+    }
+
+    function read(){
+        fetchreadbymapkey('key.key','key',null)
+        fetchreadbymapkey('storage.txt','storagetext','continueHere')
+    }
+</script>
+<script src="./index.js"></script>
+<script src="./read_fetch.js"></script>
 </html>
