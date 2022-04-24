@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div class="board">
+        <p id="error">
+          error
+        </p>
+        <p id="code">
+          404
+        </p>
+      </div>
+</body>
+
+<style>
+    body {
+  background-color: #111111;
+}
+
+.board {
+    width: 30%;
+    height: 520px;
+
+    min-width: 300px;
+    max-width: 440px;
+
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+
+    border-radius: 6px;
+    font: 75px/75px Monoton, cursive;
+    text-align: center;
+    text-transform: uppercase;
+    text-shadow: 0 0 80px red, 0 0 30px FireBrick, 0 0 6px DarkRed;
+    color: red;
+}
+
+#error {
+  color: #fff;
+  text-shadow: 0 0 80px #ffffff, 0 0 30px #008000, 0 0 6px #0000ff;
+}
+
+</style>
+
+</html>

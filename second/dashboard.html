@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <html xmlns:th="http://www.thymeleaf.org"></html>
+    <title>MOai Cloud</title>
+    <link rel="icon" href="img/1868.ico" type="image/icon type">
+    <a href='https://www.freepik.es/vectores/edad-antigua' hidden>Vector de edad antigua creado por valadzionak_volha - www.freepik.es</a>
+    <link rel="stylesheet" th:href="@{/html/button_animation.css}">
+    <link rel="stylesheet" th:href="@{/item/folder.html}">
+</head>
+<body>
+    <h1>Hola</h1>
+    <button onclick="refresh_content('default')"> REFRESH</button>
+    <div id='central'>
+
+    </div>
+</body>
+
+<!-- This script created by Jaime Roman Gil requires a method called awaitData to receibe fetch calls -->
+<script type="text/javascript" th:src="@{/js/read_fetch.js}" src="../read_fetch.js"></script>
+<!-- This is for connecting to my api -->
+<script type="text/javascript" th:src="@{/js/moaicloud_api.js}"  src="../static/js/moaicloud_api.js"></script>
+<!-- This method is based on the web api to use the provided data in a visual way -->
+<script type="text/javascript">
+
+    fetchreadbymapkey('item/folderB.html','FOLDER',null)
+    fetchreadbymapkey('item/file.html','FILE',null)
+
+
+    function itemclick(e) {
+        console.log('e: ' + e.getAttribute('id'))
+        refresh_content(e.getAttribute('id'))
+    }
+
+    function refresh_content(pathURL){
+        //1. get help from api
+        doCallNoJSON('GET','update/lightdata/help',function(xhr){
+            console.log(xhr.responseText + "!!!")
+        })
+
+        //2. call custom method that follows help argument
+        get_lightdata_from_path(pathURL,function(xhr){
+
+            //The incoming array must be procesed to get objects
+            //must be: type(file,dir)<>path or Error<>Error for corrupt items   
+            var futureArr = xhr.responseText.toString()
+            var rawItemsArr = futureArr.split(',')
+
+            //Get parent element
+            var central = document.getElementById('central')
+                //0. set null central content
+                central.innerHTML = ''
+        
+            //Transform models into elements FOLDER and FILE
+            let file = html_to_element(data.get('FILE'))
+            let folder = html_to_element(data.get('FOLDER'))
+
+            //Check integrity
+            if(file!=null && folder!=null){console.log('model state: ok')}
+
+
+            for(var i=0; i<rawItemsArr.length; i++){
+                //Check there is no errors
+                if(rawItemsArr[i].toString().includes('Error<>Error')){alert('ERROR ON SERVLET')}
+                else if(rawItemsArr[i].toString()=="['']"){alert('shit')}
+                else{
+
+                    //Get properties
+                    var properties = rawItemsArr[i].split('<>')
+                    var itemTYPE = properties[0]
+                    var itemPATH = properties[1]
+
+                    //generic item
+                    var generic = document.createElement('div')
+
+                    //Instance the objects
+                    if(itemTYPE=='file'){generic.innerHTML=data.get('FILE')
+                    }else if(itemTYPE='dir'){generic.innerHTML=data.get('FOLDER')
+                    }else{alert('non determinated type')
+                    }
+
+                    // if (typeof itemPATH == 'undefined'){
+                    //     console.log('undefined detected')
+                    //     itemPATH = 'not defined'
+                    // }
+                    
+                    try{
+                        if(typeof itemPATH == 'undefined'|| typeof itemTYPE == 'undefined'){
+                           console.log('CAUTION undefined element')
+                        }else{
+                            generic.id=itemPATH
+
+                            generic.getElementsByClassName('content')[0].innerText = itemPATH
+                            generic.getElementsByClassName('content')[0].id = itemPATH
+                            generic.getElementsByClassName('body')[0].id = itemPATH
+
+                            central.appendChild(generic)
+
+                            document.getElementById(itemPATH).getElementsByClassName('body')[0].setAttribute('onclick',"itemclick("+'this'+")")
+                        }
+
+
+                    }catch(e){console.log('error setting information-->')
+                        console.log(e)
+                    }
+
+                }
+
+            }
+            
+
+
+        })
+
+    }
+</script>
+
+    
+    
+    
+
+
+<!-- DEPLOY PANEL -->
+<div id="deployPanel1" class='deployPanel'>
+    <ul class="menu-options">
+      <br>
+      <li class="menu-option">New Folder</li>
+      <li class="menu-option"></li>
+      <hr>
+      <li class="menu-option">Upload Folder</li>
+      <li class="menu-option">Upload File</li>
+      <hr>
+      <li class="menu-option">Download</li>
+    </ul>
+  </div>
+
+  <style>
+    .deployPanel {
+      position:absolute;
+      display: none;
+    }
+    .deployPanel:hover {
+      display: block
+    }
+  </style>
+<!-- REFRESH METHODS -->
+
+
+<!-- ESTILO PANEL central -->
+<style>
+    #central{
+
+        overflow: scroll;
+        width: 85%;
+        height: 85%;
+
+        min-width: 300px;
+        /*max-width: ;*/
+
+        position: absolute;
+        top: 50%;
+        left: 50%;  
+        transform: translate(-50%, -50%);
+
+        background-color: rgba(255, 255, 255, 0.596);
+        border-radius: 6px;
+
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-gap: 10px;
+        grid-auto-rows: minmax(100px, auto);
+
+        }
+
+        .eachcard {
+        display: flex;
+        margin: auto; 
+
+        }
+    #central {
+        width: 85%;
+        background-color: rgba(0, 183, 255, 0.116);
+       
+    }
+</style>
+
+
+<!-- ESTILO DE LOS FOLDERS Y FILES -->
+<style>
+
+
+    :root {
+        --mult: calc(1);
+        --mult-font: calc(var(--mult)/1.1);
+        --folder-width: calc(150px * var(--mult));
+        --folder-height: calc(100px * var(--mult));
+        --folder-font-size: calc(10px * var(--mult-font));
+    }
+
+    body {
+        background-color: rgb(68, 68, 68);
+        font-size: var(--folder-font-size);
+            font-family: "Lucida Console", "Courier New", monospace;
+
+        
+    }
+    .folder {
+        /*margin: 50%;*/
+        margin: 20px;
+        margin-bottom: 30px;
+        transform: translate(0, 0); 
+        background-color: #ffe1a8;
+        width: var(--folder-width);
+        height: var(--folder-height);
+        border-radius: 10px;
+        /* line-height: 100px; */
+        /* text-align: center; */
+        vertical-align: middle;
+
+
+    }
+
+    .folder .tag{
+        
+        position: absolute;
+        top: -15px;
+        left: 0;
+
+        background-color: #FFD485;
+        width:50px;
+        height: 40px;
+        border-radius: 6px;
+        /* line-height: 100px; */
+        text-align: center;
+    }
+
+    .folder .body {
+
+        position: absolute;
+        top: -0;
+        left: 0;
+
+        background-color: #ffe1a8;
+        width: 150px;
+        height: 100px;
+        border-radius: 10px;
+        /*line-height: auto;*/
+        text-align: center;
+    }
+
+    .folder .content {
+
+        position: absolute;
+        top: 25%;
+        left: 30%;
+        
+        width: auto;
+
+
+        display: flex;
+        /* align-items: center; */
+
+        white-space: wrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 130px;
+
+        float: left;
+    }
+    .file {
+        /*margin: 50%;*/
+        margin: 20px;
+        margin-bottom: 30px;
+        transform: translate(0, 0); 
+        background-color: #ffe1a8;
+        width: var(--folder-width);
+        height: var(--folder-height);
+        border-radius: 10px;
+        /* line-height: 100px; */
+        /* text-align: center; */
+        vertical-align: middle;
+    }
+
+
+
+    .file .body {
+
+        position: absolute;
+        top: -0;
+        left: 0;
+
+        background-color: #a8d1ff;
+        width: 150px;
+        height: 100px;
+        border-radius: 10px;
+        /*line-height: auto;*/
+        text-align: center;
+    }
+
+    .file .content {
+
+        position: absolute;
+        top: 25%;
+        left: 5%;
+        
+        width: auto;
+
+        display: flex;
+        /* align-items: center; */
+
+        white-space: wrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 130px;
+
+        float: left;
+
+    }
+
+
+
+</style>
+
+
+</html>

@@ -1,0 +1,25 @@
+.raise1 {
+    --color: #424140;
+    --hover: #38af9f;
+  }
+
+.raise2 {
+    --color: #424140;
+    --hover: #815c6b;
+}
+
+.button_container button:hover,
+.button_container button:focus {
+    box-shadow: 0 0.5em 0.5em -0.4em var(--hover);
+    transform: translateY(-0.25em);
+  }
+  
+button {
+    color: var(--color);
+    transition: 0.25s;
+}
+button:hover, button:focus {
+    border-color: var(--hover);
+    color: rgb(253, 253, 253);
+    text-overflow: ellipsis;
+}
